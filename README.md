@@ -6,14 +6,15 @@ Port of OpenSolver for Excel to LibreOffice
 ## Usage Notes
 
 ## Developer's Notes
-Porting a macro based extension from Excel to LibreOffice is not as simple as it seems at first.
+Porting a macro based extension from Excel to LibreOffice is not as simple as it seems.
 The two macro coding languages, Visual Basic for Applications (VBA) and LibreOffice Basic (BASIC) are similar
 in many ways, but are just different enough to be largely incompatible. The following notes are meant to
 explain various work-arounds and adaptations we have made to allow the system to function. Due to the severe
 lack of documentation for LibreOffice, there are a couple resources that would be helpful to continue work
 on the system. [This book](http://www.pitonyak.org/book/) is extremely helpful, as it is the most complete
-documentation on BASIC we were able to find. [The API](https://api.libreoffice.org/) for LibreOffice is also
-a helpful reference.
+documentation on BASIC we were able to find. 
+[VBA Reference](https://docs.microsoft.com/en-us/office/vba/api/overview/excel) is helpful for
+understanding VBA. [The API](https://api.libreoffice.org/) for LibreOffice is also a helpful reference.
 
 ### Introduction to the system
 There are three major sections within the OpenSolver codebase. `Standard`, `ClassModules`, and `Dialogs`.  
@@ -24,9 +25,12 @@ stored. This code is used for all Solvers within OpenSolver. The following are e
 currently present within the port:
 
 - Debug
+
     This module is used as an isolated module to test functions and classes. Outside of development testing
     purposes this module serves no purpose.
+    
 - OpenSolverAPI
+
     The API for OpenSolver. Most functions that Users will have direct contact with and influence over are
     present here. Almost all other functions present within OpenSolver are called from functions within this
     module. Here is where the variables used by the solvers are stored and retrieved, using the Named Ranges
@@ -34,12 +38,16 @@ currently present within the port:
     
     Functions present but incomplete or untested:
     1. RunOpenSolver
+    
 - OpenSolverConstants
+
     Constant values, enumerations, and functions that access them are largely stored here.
     
     Functions present but incomplete or untested:
     1. ReverseRelation
+    
 - OpenSolverErrorHandler
+
     Error Handling for all of OpenSolver eventually routes through here. Most functions call at least one of
     these functions on an error.
     
@@ -47,7 +55,9 @@ currently present within the port:
     1. ClearError
     2. ReportError
     3. RaiseUserCancelledError
+    
 - OpenSolverIO
+
     IO functionality is implemented here. This includes accessing the file system, and accessing the
     workbook.
     
@@ -57,16 +67,22 @@ currently present within the port:
     3. FileOrDirExists
     4. DeleteFileAndVerify
     5. SolverDirIsPresent
+    
 - OpenSolverLibre
+
     This is a good place to store functions that are necessary for OpenSolver to work on LibreOffice.
     Currently this only contains the function `LibreSolve`, which effectively short-circuits the current
     lack of full implementation on `RunOpenSolver` to allow the default system solver of LibreOffice to run
     using the inputs generated through the API. This function will eventually become obsolete when
     `RunOpenSolver` has a full implementation.
+    
 - OpenSolverModelValidation
+
     Validation for many of the inputs passed into the API happens here. If the input cannot be validated
     naturally in the original function, a validation function is created here.
+    
 - OpenSolverRangeUtils
+
     This module contains the Utility functions that deal primarily with ranges of cells. Utilities like
     merging multiple ranges, or ensuring that merged cell selection is correctly referencing the merged cell.
     
@@ -75,7 +91,9 @@ currently present within the port:
     2. TestCellsForWriting
     3. SetDifference
     4. ProperUnion
+    
 - OpenSolverStoredNames
+
     Named range functionality is handled here. Saving named ranges or values, and retrieving those values are
     both handled within this module. Most of these functions are simply wrappers that do data type
     manipulation on the inputs so convert them all to doubles, and then store those doubles on the sheet.
@@ -89,7 +107,9 @@ currently present within the port:
     saving through VBA and saving through BASIC. If this functionality becomes required later on (i.e. it
     matters if there are different sheets with different variables) then this will need to be modified, as
     will `SetNameOnSheet` and `SetNamedRangeOnSheet` to correctly handle sheet names.
+    
 - OpenSolverUtils
+
     Utility functions that are not specifically for ranges. The top of this file contains operating system
     specific code. This is largely non-functional and definitely requires further investigation and
     implementation.
@@ -102,7 +122,9 @@ currently present within the port:
     5. UpdateStatusBar
     6. ForceCalculate
     7. RemoveRangeOverlap
+    
 - SolverCommon
+
     Functions common to all solvers, that either set up or solve the problem. __This is entirely untested__.
 
 #### ClassModules
@@ -111,21 +133,34 @@ implemented, and where the major solver model code is. __This library is entirel
 Class Modules must begin with `Option Compatible` and `Option ClassModule` to function properly.
 
 - COpenSolver
+
     This builds the solver models used by the various solvers. This includes getting the various variables
     and settings that most solvers require.
+    
 - CSolverCbc
+
     This is the specific implementation of the solver for the CBC Linear Solver. This solver is the primary
     concern for this project, and should be first priority when implementing the actual solvers.
+    
 - ISolver
+
     The definition of the solver interface, to be implemented by the actual solvers.
+    
 - ISolverFile
-    Interface for using a model file when solving
+
+    Interface for using a model file when solving - _not entirely sure what this does_.
+    
 - ISolverLinear
+
     Interface for sensitivity analysis. Contains an implementation of writing the Constraint Sensitivity
     Table.
+    
 - ISolverLocal
-    Interface for local functionality - not entirely sure what this does.
+
+    Interface for local functionality - _not entirely sure what this does_.
+    
 - ISolverLocalExec
+
     Interface for file system execution for solvers that are an executable file.
 
 #### Dialogs
