@@ -2,8 +2,14 @@
 Port of OpenSolver for Excel to LibreOffice
 
 ## Installation Notes
+Clone the repository and open openSolverPortTestDoc.ods.
 
 ## Usage Notes
+1. Click the "Run Solver" button in the first sheet of the openSolverPortTestDoc.ods.
+(Note: May not work the first time with WrappedTargetException, but should work afterwards)
+2. Enter the proper objective cell addresses, variable cell addresses, constraints cell addresses (e.g. B2, C2:D4, etc).
+3. Choose objective sense(maximize or minimize. "Exact value of" functionality is in UI but may not work properly) and operators properly.
+4. Run solver by clicking Solve! button.
 
 ## Developer's Notes
 Porting a macro based extension from Excel to LibreOffice is not as simple as it seems.
@@ -164,6 +170,28 @@ Class Modules must begin with `Option Compatible` and `Option ClassModule` to fu
     Interface for file system execution for solvers that are an executable file.
 
 #### Dialogs
+Macros in Module 1 interacts with 'DemoSolver' Dialog. Some of the main macros related to Dialogs are:
+
+- StartDialog
+
+    Generate a working pop-up screen of DemoSolver GUI.
+
+- setAndDrawTargetCells
+
+    Sets target cell(objective cell) using function from OpenSolverAPI, and draws objects that highlight the cells.
+
+- setAndDrawVarCells
+
+    Sets variable cells(decision variable cells) using function from OpenSolverAPI, and draws objects that highlight the cells.    
+
+- setAndDrawConstCells1 (and 2-8 are essentially same, except that those are optional where 1 is not)
+
+    Sets constraint cells using function from OpenSolverAPI, and draws objects that highlight the cells.
+
+- onclick_finalSolve
+
+    Sets all variable cells and draw highlighters using macros above, and runs solver. Deletes constraint named ranges after running solver.
+
 
 ### Helpful notes on translation
 - Due to the relative lack of documentation for BASIC, it is a good idea to try the VBA commands first.
@@ -191,4 +219,8 @@ ways when being passed between functions, especially if a VBA type is not explic
 ranges contain within them a reference to the BASIC cellRange equivalent. This could be useful for
 transitioning between the two going forward.
 - Note that VBA array indeces start at 1, while BASIC array indeces start at 0.
+
 ### Helpful notes on User Interface
+- Note that Dialog in LibreOffice Basic is quite volatile - it may crash just when you are changing name of a component in your Dialog. So be sure to save your work frequently!
+- When you see an error and if you are using global variables, try using local variable that would grab the same data and run it again. In many of the debugging cases, for some reason we do not fully understand, this resolved the error.
+- When assigning colors, using RGB(0,0,255) did not yield the color Blue - instead, it returned Red. Try using decimal values (for instance, 255 for Blue, 16711680 for Red).
