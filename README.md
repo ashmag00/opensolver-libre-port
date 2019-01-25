@@ -5,8 +5,8 @@ Port of OpenSolver for Excel to LibreOffice
 Clone the repository and open openSolverPortTestDoc.ods.
 
 ## Usage Notes
-1. Click the "Run Solver" button in the first sheet of the openSolverPortTestDoc.ods.
-(Note: May not work the first time with WrappedTargetException, but should work afterwards)
+1. Click the "Run Solver" button in the first sheet of the openSolverPortTestDoc.ods
+(Note: May not work the first time with WrappedTargetException, but should work afterwards).
 2. Enter the proper objective cell addresses, variable cell addresses, constraints cell addresses (e.g. B2, C2:D4, etc).
 3. Choose objective sense(maximize or minimize. "Exact value of" functionality is in UI but may not work properly) and operators properly.
 4. Run solver by clicking Solve! button.
@@ -223,4 +223,4 @@ transitioning between the two going forward.
 ### Helpful notes on User Interface
 - Note that Dialog in LibreOffice Basic is quite volatile - it may crash just when you are changing name of a component in your Dialog. So be sure to save your work frequently!
 - When you see an error and if you are using global variables, try using local variable that would grab the same data and run it again. In many of the debugging cases, for some reason we do not fully understand, this resolved the error.
-- When assigning colors, using RGB(0,0,255) did not yield the color Blue - instead, it returned Red. Try using decimal values (for instance, 255 for Blue, 16711680 for Red).
+- When assigning colors, using RGB ( 0 , 0 , 255 ) did not yield the color Blue - instead, it returned Red. Hence, try using decimal values (for instance, 255 for Blue, 16711680 for Red) instead.
